@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catálogos · Casos SIUCE</title>
+<link rel="stylesheet" href="css/estilos.css">
+<script src="js/jquery.min.js"></script>
+<script src="js/sesion.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/catalogos.js"></script>
+</head>
+<body>
+<header class="cab" id="cab"></header>
+
+<main class="contenedor">
+  <div class="titulo-pag"><div><h1>Catálogos</h1><p class="mut" style="margin: 0">Áreas, municipios, instituciones y sedes que se usan al registrar o importar casos.</p></div></div>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" data-tab="areas" aria-selected="true">Áreas</button>
+    <button role="tab" data-tab="municipios">Municipios</button>
+    <button role="tab" data-tab="instituciones">Instituciones</button>
+    <button role="tab" data-tab="sedes">Sedes</button>
+  </div>
+
+  <section class="card">
+    <div id="selectores" class="grid g3" style="margin-bottom: 1rem" hidden>
+      <div>
+        <label for="sel-provincia">Provincia</label>
+        <select id="sel-provincia"><option value="">Seleccione…</option></select>
+      </div>
+      <div id="sel-municipio-wrap" hidden>
+        <label for="sel-municipio">Municipio</label>
+        <select id="sel-municipio" disabled><option value="">Seleccione…</option></select>
+      </div>
+      <div id="sel-institucion-wrap" hidden>
+        <label for="sel-institucion">Institución</label>
+        <select id="sel-institucion" disabled><option value="">Seleccione…</option></select>
+      </div>
+    </div>
+
+    <h2 id="titulo-nivel"></h2>
+    <p class="ayuda" id="ayuda-areas" hidden>Las cuatro áreas del sistema no se pueden agregar ni borrar, solo renombrar.</p>
+    <form id="form-crear" class="acciones" style="margin-bottom: 1rem" hidden>
+      <input id="nombre-nuevo" aria-label="Nombre nuevo" placeholder="Nombre nuevo" maxlength="150" style="max-width: 360px">
+      <button class="btn btn-pri" id="btn-agregar" disabled>Agregar</button>
+    </form>
+    <div id="sin-registros" class="vacio" hidden></div>
+    <div id="lista-nivel"></div>
+  </section>
+</main>
+
+<div id="avisos" class="avisos" aria-live="polite"></div>
+<dialog id="dlg-confirmar"></dialog>
+
+<script src="js/pagina-catalogos.js"></script>
+</body>
+</html>

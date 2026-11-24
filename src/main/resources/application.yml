@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: sci-seb
+  datasource:
+    url: ${DB_URL:jdbc:mariadb://localhost:3306/sciseb}
+    username: ${DB_USER:sciseb}
+    password: ${DB_PASSWORD:sfxZ67gNg?h#}
+  jpa:
+    open-in-view: false
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    hibernate:
+      ddl-auto: none            # el esquema se crea a mano con basedatos/01_esquema.sql; Hibernate no lo toca
+    properties:
+      hibernate:
+        format_sql: false
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+        order_updates: true
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 6MB
+  jackson:
+    default-property-inclusion: always
+
+server:
+  port: 8080
+  error:
+    include-message: never
+    include-stacktrace: never
+
+app:
+  jwt:
+    # Cambiar en producción: mínimo 32 caracteres (variable de entorno JWT_SECRET)
+    secret: ${JWT_SECRET:dvPfoksKx5V4rpKVGwVfZtYSN9YdeJ3DBUlS6hMHzjmE66Q57WkgiNRmhzFVG1Rj}
+    expiracion-minutos: 30
+  cors:
+    # El frontend ya se sirve desde el mismo origen (http://localhost:8080), así que CORS casi
+    # no hace falta en desarrollo; se deja configurable por si se abre el HTML desde otro puerto.
+    origenes: ${CORS_ORIGENES:http://localhost:8080}
+  admin:
+    correo: ${ADMIN_CORREO:admin@sciseb.local}
+    clave: ${ADMIN_CLAVE:Cambiar123*}
+  importacion:
+    max-filas: 2000
+    minutos-vista-previa: 15
+  exportacion:
+    max-filas: 5000

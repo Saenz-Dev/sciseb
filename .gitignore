@@ -1,0 +1,7 @@
+target/
+.idea/
+*.iml
+.vscode/
+*.log
+# basedatos/exportaciones/ contiene datos reales/de prueba y el hash de la clave del Administrador
+basedatos/exportaciones/

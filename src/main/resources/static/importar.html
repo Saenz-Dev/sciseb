@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Importar CSV · Casos SIUCE</title>
+<link rel="stylesheet" href="css/estilos.css">
+<script src="js/jquery.min.js"></script>
+<script src="js/sesion.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/validadores.js"></script>
+</head>
+<body>
+<header class="cab" id="cab"></header>
+
+<main class="contenedor">
+  <div class="titulo-pag">
+    <div>
+      <h1>Importar casos desde CSV</h1>
+      <p class="mut" style="margin: 0">Cargue varios casos a la vez. Cada fila se valida con las mismas reglas del registro manual.</p>
+    </div>
+  </div>
+  <div id="alerta-error" class="alerta a-bad" role="alert" hidden></div>
+
+  <section class="card">
+    <h2>1. Descargue la plantilla</h2>
+    <p>La plantilla trae las columnas en el orden correcto. Las instituciones, sedes y municipios deben escribirse <b>igual que en Catálogos</b>.</p>
+    <button class="btn" id="btn-plantilla">Descargar plantilla CSV</button>
+    <details style="margin-top: 1rem">
+      <summary style="cursor: pointer; font-weight: 600">Ver las columnas y sus formatos</summary>
+      <div class="tabla-wrap" style="margin-top: .6rem">
+        <table class="tabla">
+          <thead><tr><th>Columna</th><th>Obligatoria</th><th>Formato</th></tr></thead>
+          <tbody>
+            <tr><td><code>id_caso</code></td><td>No</td><td>5 números (00123). Déjelo vacío si aún no se asigna.</td></tr>
+            <tr><td><code>presunto_agresor</code></td><td>Sí</td><td>Nombre completo</td></tr>
+            <tr><td><code>victima_iniciales</code></td><td>Sí</td><td>Una o más, separadas por ; (ej. J.P.; M.G.)</td></tr>
+            <tr><td><code>cedula</code></td><td>Sí</td><td>Solo números, sin puntos</td></tr>
+            <tr><td><code>area_asignatura</code></td><td>No</td><td>Asignatura que dicta</td></tr>
+            <tr><td><code>institucion</code></td><td>Sí</td><td>Tal como está en Catálogos</td></tr>
+            <tr><td><code>sede</code></td><td>Sí</td><td>Tal como está en Catálogos</td></tr>
+            <tr><td><code>municipio</code></td><td>Sí</td><td>Tal como está en Catálogos</td></tr>
+            <tr><td><code>provincia</code></td><td>Sí</td><td>Una de las 15 provincias</td></tr>
+            <tr><td><code>clasificacion</code></td><td>Sí</td><td>Tipo I, Tipo II o Tipo III</td></tr>
+            <tr><td><code>ruta</code></td><td>No</td><td>Activa o Inactiva (por defecto Inactiva)</td></tr>
+            <tr><td><code>n_radicado</code></td><td>No</td><td>Letras y números</td></tr>
+            <tr><td><code>resolucion_seb</code></td><td>No</td><td>Solo números</td></tr>
+            <tr><td><code>resolucion_rectoral</code></td><td>No</td><td>Solo números</td></tr>
+            <tr><td><code>ubicacion</code></td><td>No</td><td>Texto</td></tr>
+            <tr><td><code>fecha_ocurrencia</code></td><td>No</td><td>AAAA-MM-DD o DD/MM/AAAA. Déjela vacía si no se conoce.</td></tr>
+            <tr><td><code>lugar_ocurrencia</code></td><td>No</td><td>Texto</td></tr>
+            <tr><td><code>disciplinario</code></td><td>No</td><td>Letras y números</td></tr>
+            <tr><td><code>decision_comite</code></td><td>No</td><td>Texto</td></tr>
+            <tr><td><code>penal</code></td><td>No</td><td>Solo números</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+  </section>
+
+  <section class="card">
+    <h2>2. Seleccione el archivo y revíselo</h2>
+    <div class="alerta a-info peq">El archivo <b>no se guarda</b> en el sistema: solo se leen sus filas. Máximo 5 MB y 2.000 filas. Acepta separador coma o punto y coma.</div>
+    <div class="acciones">
+      <input id="entrada-archivo" type="file" accept=".csv,text/csv" aria-label="Archivo CSV" style="max-width: 420px">
+      <button class="btn btn-pri" id="btn-revisar" disabled>Revisar archivo</button>
+    </div>
+  </section>
+
+  <section class="card" id="seccion-vista-previa" hidden>
+    <h2>3. Vista previa</h2>
+    <div class="grid g3" style="margin-bottom: 1rem">
+      <div class="kpi"><b id="vp-total"></b><span>Filas leídas</span></div>
+      <div class="kpi"><b id="vp-validas"></b><span>Válidas (se importarán)</span></div>
+      <div class="kpi"><b id="vp-rechazadas" style="color: var(--bad)"></b><span>Con errores (no se importarán)</span></div>
+    </div>
+    <label style="font-weight: 400"><input type="checkbox" id="chk-solo-malas"> Mostrar solo las filas con errores</label>
+    <div class="tabla-wrap" style="margin-top: .6rem">
+      <table class="tabla">
+        <thead><tr><th>Fila</th><th>ID</th><th>Estado</th><th>Qué corregir</th></tr></thead>
+        <tbody id="vp-filas"></tbody>
+      </table>
+    </div>
+    <p class="ayuda" id="vp-nota-300" hidden>Se muestran las primeras 300 filas; el conteo incluye todas.</p>
+    <div class="acciones" style="margin-top: 1rem">
+      <button class="btn btn-pri" id="btn-importar">Importar</button>
+      <button class="btn" id="btn-cancelar-vista">Cancelar</button>
+    </div>
+    <p class="ayuda">La vista previa vence a los 15 minutos. Corrija el archivo y vuelva a cargarlo si hay filas con errores.</p>
+  </section>
+
+  <section class="card" id="seccion-resultado" hidden>
+    <h2>Importación terminada</h2>
+    <div class="alerta a-ok" role="status" id="resultado-texto"></div>
+    <div class="acciones">
+      <a class="btn btn-pri" href="casos.html">Ver casos</a>
+      <button class="btn" id="btn-informe" hidden>Descargar informe de filas rechazadas</button>
+    </div>
+  </section>
+</main>
+
+<div id="avisos" class="avisos" aria-live="polite"></div>
+<dialog id="dlg-confirmar"></dialog>
+
+<script src="js/pagina-importar.js"></script>
+</body>
+</html>

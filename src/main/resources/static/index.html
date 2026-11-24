@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ingresar · Casos SIUCE</title>
+<link rel="stylesheet" href="css/estilos.css">
+<script src="js/jquery.min.js"></script>
+<script src="js/sesion.js"></script>
+<script src="js/api.js"></script>
+</head>
+<body>
+<main class="login-wrap">
+  <form class="card login-card" id="form-login" novalidate>
+    <div class="marca"><i aria-hidden="true">SCI</i> Seguimiento de casos SIUCE</div>
+    <p class="mut centro peq">Secretaría de Educación de Boyacá · Situaciones Tipo I, II y III</p>
+    <div id="alerta-sesion" class="alerta a-info" role="status" hidden></div>
+    <div id="alerta-error" class="alerta a-bad" role="alert" hidden></div>
+    <div class="campo" style="margin-bottom: .8rem">
+      <label for="correo">Correo</label>
+      <input id="correo" type="email" autocomplete="username" autofocus required>
+    </div>
+    <div class="campo" style="margin-bottom: 1rem">
+      <label for="clave">Clave</label>
+      <input id="clave" type="password" autocomplete="current-password" required>
+    </div>
+    <button class="btn btn-pri" id="btn-ingresar" style="width: 100%">Ingresar</button>
+    <p class="ayuda centro" style="margin-top: 1rem">Esta información es confidencial (Ley 1581 de 2012). El acceso queda registrado.</p>
+  </form>
+</main>
+
+<script src="js/pagina-index.js"></script>
+</body>
+</html>

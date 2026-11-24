@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Caso · Casos SIUCE</title>
+<link rel="stylesheet" href="css/estilos.css">
+<script src="js/jquery.min.js"></script>
+<script src="js/sesion.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/catalogos.js"></script>
+<script src="js/validadores.js"></script>
+</head>
+<body>
+<header class="cab" id="cab"></header>
+
+<main class="contenedor">
+  <div class="titulo-pag">
+    <div>
+      <h1 id="titulo-pagina">Registrar caso</h1>
+      <p class="mut" style="margin: 0">Todos los campos son opcionales: puede registrar el caso con los datos que tenga y completarlo después editándolo. Si escribe el nombre del presunto agresor sin su cédula, queda como borrador hasta que la complete. Los documentos se registran después, solo como enlaces.</p>
+    </div>
+  </div>
+  <div id="alerta-general" class="alerta a-bad" role="alert" hidden></div>
+  <div id="cargando" class="vacio">Cargando…</div>
+
+  <form id="form-caso" novalidate hidden>
+    <fieldset>
+      <legend>Identificación</legend>
+      <div class="grid g3">
+        <div class="campo" id="campo-idCaso">
+          <label for="idCaso">ID del caso</label>
+          <input id="idCaso" inputmode="numeric" maxlength="5" autocomplete="off">
+          <div class="msg-error" hidden></div>
+          <div class="ayuda">5 números, por ejemplo 00123. Déjelo en blanco si aún no se asigna.</div>
+        </div>
+        <div class="campo" id="campo-clasificacionId">
+          <label for="clasificacionId">Clasificación en el SIUCE</label>
+          <select id="clasificacionId"><option value="">Seleccione…</option></select>
+          <div class="msg-error" hidden></div>
+        </div>
+        <div class="campo" id="campo-rutaActiva">
+          <label for="rutaActiva">Activación de ruta</label>
+          <select id="rutaActiva">
+            <option value="false">Inactiva</option>
+            <option value="true">Activa</option>
+          </select>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Presunto agresor y presunta víctima</legend>
+      <div class="grid g3">
+        <div class="campo" id="campo-presuntoAgresor">
+          <label for="presuntoAgresor">Presunto agresor</label>
+          <input id="presuntoAgresor" autocomplete="off" maxlength="120">
+          <div class="msg-error" hidden></div>
+          <div class="ayuda">Si ya está registrado con esa cédula, se completa solo. Sin cédula, el nombre queda guardado como borrador.</div>
+        </div>
+        <div class="campo" id="campo-cedula">
+          <label for="cedula">Cédula del agresor</label>
+          <input id="cedula" inputmode="numeric" maxlength="12" autocomplete="off">
+          <div class="msg-error" hidden></div>
+          <div class="ayuda">Solo números, sin puntos. Si ya está registrada, el nombre se completa solo. Déjela en blanco si todavía no se conoce.</div>
+        </div>
+        <div class="campo" id="campo-areaAsignatura">
+          <label for="areaAsignatura">Área / asignatura que dicta</label>
+          <input id="areaAsignatura" maxlength="80">
+          <div class="msg-error" hidden></div>
+        </div>
+      </div>
+      <div class="campo" id="campo-victimas">
+        <label>Presuntas víctimas (iniciales)</label>
+        <div id="lista-victimas"></div>
+        <button type="button" class="btn btn-chico" id="btn-agregar-victima">+ Agregar víctima</button>
+        <div class="msg-error" hidden></div>
+        <div class="ayuda">Solo iniciales, por ejemplo J.P. Nunca el nombre completo. Agregue una fila por cada víctima.</div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Institución educativa</legend>
+      <div class="grid g4">
+        <div class="campo" id="campo-provinciaId">
+          <label for="provinciaId">Provincia</label>
+          <select id="provinciaId"><option value="">Seleccione…</option></select>
+          <div class="msg-error" hidden></div>
+        </div>
+        <div class="campo" id="campo-municipioId">
+          <label for="municipioId">Municipio</label>
+          <select id="municipioId" disabled><option value="">Seleccione…</option></select>
+          <div class="msg-error" hidden></div>
+        </div>
+        <div class="campo" id="campo-institucionId">
+          <label for="institucionId">Institución educativa</label>
+          <select id="institucionId" disabled><option value="">Seleccione…</option></select>
+          <div class="msg-error" hidden></div>
+        </div>
+        <div class="campo" id="campo-sedeId">
+          <label for="sedeId">Sede</label>
+          <select id="sedeId" disabled><option value="">Seleccione…</option></select>
+          <div class="msg-error" hidden></div>
+        </div>
+      </div>
+      <p class="ayuda" id="sin-instituciones" hidden>No hay instituciones en este municipio. Pida al Administrador que las agregue en Catálogos.</p>
+    </fieldset>
+
+    <fieldset>
+      <legend>Ocurrencia</legend>
+      <div class="grid g2">
+        <div class="campo" id="campo-fechaOcurrencia">
+          <label for="fechaOcurrencia">Fecha de ocurrencia</label>
+          <input id="fechaOcurrencia" type="date">
+          <div class="msg-error" hidden></div>
+          <div class="ayuda">Déjela en blanco si no se conoce todavía.</div>
+        </div>
+        <div class="campo" id="campo-lugarOcurrencia">
+          <label for="lugarOcurrencia">Lugar de ocurrencia</label>
+          <input id="lugarOcurrencia" maxlength="120">
+          <div class="msg-error" hidden></div>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Proceso</legend>
+      <div class="grid g3">
+        <div class="campo" id="campo-nRadicado">
+          <label for="nRadicado">N° de radicado</label>
+          <input id="nRadicado" maxlength="30" autocomplete="off">
+          <div class="msg-error" hidden></div>
+          <div class="ayuda">Letras y números</div>
+        </div>
+        <div class="campo" id="campo-resolucionSeb">
+          <label for="resolucionSeb"># Resolución SEB</label>
+          <input id="resolucionSeb" inputmode="numeric" maxlength="20" autocomplete="off">
+          <div class="msg-error" hidden></div>
+          <div class="ayuda">Solo números</div>
+        </div>
+        <div class="campo" id="campo-resolucionRectoral">
+          <label for="resolucionRectoral"># Resolución rectoral</label>
+          <input id="resolucionRectoral" inputmode="numeric" maxlength="20" autocomplete="off">
+          <div class="msg-error" hidden></div>
+          <div class="ayuda">Solo números</div>
+        </div>
+        <div class="campo" id="campo-disciplinario">
+          <label for="disciplinario">Disciplinario</label>
+          <input id="disciplinario" maxlength="30" autocomplete="off">
+          <div class="msg-error" hidden></div>
+          <div class="ayuda">Letras y números</div>
+        </div>
+        <div class="campo" id="campo-penal">
+          <label for="penal">Penal</label>
+          <input id="penal" inputmode="numeric" maxlength="30" autocomplete="off">
+          <div class="msg-error" hidden></div>
+          <div class="ayuda">Número del proceso, solo dígitos</div>
+        </div>
+        <div class="span2 campo" id="campo-ubicacionAgresor">
+          <label for="ubicacionAgresor">Ubicación del presunto agresor</label>
+          <textarea id="ubicacionAgresor" maxlength="500"></textarea>
+          <div class="msg-error" hidden></div>
+          <div class="ayuda">Sitio donde se ubica para separarlo de la institución y del contacto con la comunidad educativa</div>
+        </div>
+        <div class="span2 campo" id="campo-decisionComite">
+          <label for="decisionComite">Decisión del comité</label>
+          <textarea id="decisionComite" maxlength="2000"></textarea>
+          <div class="msg-error" hidden></div>
+        </div>
+      </div>
+    </fieldset>
+
+    <div class="acciones">
+      <button class="btn btn-pri" id="btn-guardar">Registrar caso</button>
+      <button type="button" class="btn" id="btn-cancelar">Cancelar</button>
+    </div>
+  </form>
+</main>
+
+<div id="avisos" class="avisos" aria-live="polite"></div>
+<dialog id="dlg-confirmar"></dialog>
+
+<script src="js/pagina-caso-form.js"></script>
+</body>
+</html>
