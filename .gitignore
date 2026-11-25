@@ -3,5 +3,6 @@ target/
 *.iml
 .vscode/
 *.log
+sci-seb-app/config/config.php
 # basedatos/exportaciones/ contiene datos reales/de prueba y el hash de la clave del Administrador
 basedatos/exportaciones/

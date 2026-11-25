@@ -1,0 +1,11 @@
+RewriteEngine On
+
+# Algunos hosts (php-cgi/php-fpm sin CGIPassAuth) no pasan la cabecera Authorization a PHP.
+# Esto la recupera como variable de entorno antes de reescribir, y Sci_Auth además trae un
+# mecanismo de respaldo (getallheaders / HTTP_AUTHORIZATION / REDIRECT_HTTP_AUTHORIZATION).
+RewriteCond %{HTTP:Authorization} ^(.*)
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%1]
+CGIPassAuth On
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [L]

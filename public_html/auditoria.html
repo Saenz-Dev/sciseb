@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Auditoría · Casos SIUCE</title>
+<link rel="stylesheet" href="css/estilos.css">
+<script src="js/jquery.min.js"></script>
+<script src="js/sesion.js"></script>
+<script src="js/api.js"></script>
+<script src="js/formato.js"></script>
+<script src="js/ui.js"></script>
+</head>
+<body>
+<header class="cab" id="cab"></header>
+
+<main class="contenedor">
+  <div class="titulo-pag"><div><h1>Auditoría</h1><p class="mut" style="margin: 0">Quién hizo cada operación y cuándo. Los registros no se pueden editar ni borrar.</p></div></div>
+
+  <form class="card filtros" style="grid-template-columns: repeat(5, 1fr)" id="form-filtros">
+    <div><label for="f-caso">ID interno del caso</label><input id="f-caso" inputmode="numeric"></div>
+    <div><label for="f-usuario">Usuario</label><select id="f-usuario"><option value="">Todos</option></select></div>
+    <div><label for="f-desde">Desde</label><input id="f-desde" type="date"></div>
+    <div><label for="f-hasta">Hasta</label><input id="f-hasta" type="date"></div>
+    <div><button class="btn btn-pri" style="width: 100%">Consultar</button></div>
+  </form>
+
+  <div id="alerta-error" class="alerta a-bad" role="alert" hidden></div>
+  <section class="card">
+    <p class="mut peq" style="margin-top: 0" id="total-registros"></p>
+    <div id="sin-registros" class="vacio" hidden>No hay registros con estos filtros.</div>
+    <div class="tabla-wrap">
+      <table class="tabla" id="tabla-auditoria" hidden>
+        <thead><tr><th>Fecha</th><th>Persona</th><th>Área</th><th>Acción</th><th>Caso</th><th>Detalle</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="paginacion">
+      <button class="btn btn-chico" id="btn-anterior">← Anterior</button>
+      <span class="peq mut" id="texto-pagina"></span>
+      <button class="btn btn-chico" id="btn-siguiente">Siguiente →</button>
+    </div>
+  </section>
+</main>
+
+<div id="avisos" class="avisos" aria-live="polite"></div>
+<dialog id="dlg-confirmar"></dialog>
+
+<script src="js/pagina-auditoria.js"></script>
+</body>
+</html>

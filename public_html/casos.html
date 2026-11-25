@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Casos · Casos SIUCE</title>
+<link rel="stylesheet" href="css/estilos.css">
+<script src="js/jquery.min.js"></script>
+<script src="js/sesion.js"></script>
+<script src="js/api.js"></script>
+<script src="js/formato.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/catalogos.js"></script>
+</head>
+<body>
+<header class="cab" id="cab"></header>
+
+<main class="contenedor">
+  <div class="titulo-pag">
+    <div>
+      <h1>Casos</h1>
+      <p class="mut" style="margin: 0">Base principal de casos Tipo I, II y III.</p>
+    </div>
+    <div class="acciones">
+      <button class="btn" id="btn-exportar-csv">Exportar CSV</button>
+      <button class="btn" id="btn-exportar-xlsx">Exportar Excel</button>
+      <a class="btn btn-pri" href="caso-form.html">Registrar caso</a>
+    </div>
+  </div>
+
+  <form class="card filtros" role="search" id="form-filtros">
+    <div>
+      <label for="f-q">Buscar</label>
+      <input id="f-q" type="search" placeholder="ID, nombre, cédula, institución, municipio o radicado">
+    </div>
+    <div>
+      <label for="f-prov">Provincia</label>
+      <select id="f-prov"><option value="">Todas</option></select>
+    </div>
+    <div>
+      <label for="f-clas">Clasificación</label>
+      <select id="f-clas"><option value="">Todas</option></select>
+    </div>
+    <div>
+      <label for="f-ruta">Ruta</label>
+      <select id="f-ruta">
+        <option value="">Todas</option>
+        <option value="activa">Activa</option>
+        <option value="inactiva">Inactiva</option>
+      </select>
+    </div>
+    <div>
+      <label for="f-estado">Estado</label>
+      <select id="f-estado">
+        <option value="ACTIVO">Activos</option>
+        <option value="ARCHIVADO">Archivados</option>
+        <option value="TODOS">Todos</option>
+      </select>
+    </div>
+    <div>
+      <label for="f-borrador">Presunto agresor</label>
+      <select id="f-borrador">
+        <option value="">Todos</option>
+        <option value="true">Solo borradores (sin cédula)</option>
+      </select>
+    </div>
+  </form>
+
+  <div id="alerta-error" class="alerta a-bad" role="alert" hidden></div>
+
+  <section class="card">
+    <div class="paginacion" style="margin: 0 0 .6rem">
+      <span class="mut peq" id="total-casos"></span>
+      <button class="btn-link peq" type="button" id="btn-limpiar">Limpiar filtros</button>
+    </div>
+    <div id="sin-resultados" class="vacio" hidden>No hay casos con estos filtros.</div>
+    <div class="tabla-wrap">
+      <table class="tabla" id="tabla-casos" hidden>
+        <thead>
+          <tr><th>ID</th><th>Presunto agresor</th><th>Cédula</th><th>Institución / sede</th><th>Municipio</th><th>Clasificación</th><th>Ruta</th><th>Avance</th><th>Última edición</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="paginacion">
+      <button class="btn btn-chico" id="btn-anterior">← Anterior</button>
+      <span class="peq mut" id="texto-pagina"></span>
+      <button class="btn btn-chico" id="btn-siguiente">Siguiente →</button>
+    </div>
+  </section>
+  <p class="ayuda" id="ayuda-cedula">La cédula se muestra parcialmente; al exportar también se enmascara (el Administrador exporta la cédula completa).</p>
+</main>
+
+<div id="avisos" class="avisos" aria-live="polite"></div>
+<dialog id="dlg-confirmar"></dialog>
+
+<script src="js/pagina-casos.js"></script>
+</body>
+</html>

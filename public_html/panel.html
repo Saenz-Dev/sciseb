@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel · Casos SIUCE</title>
+<link rel="stylesheet" href="css/estilos.css">
+<script src="js/jquery.min.js"></script>
+<script src="js/sesion.js"></script>
+<script src="js/api.js"></script>
+<script src="js/formato.js"></script>
+<script src="js/ui.js"></script>
+</head>
+<body>
+<header class="cab" id="cab"></header>
+
+<main class="contenedor">
+  <div class="titulo-pag">
+    <div>
+      <h1>Panel</h1>
+      <p class="mut" style="margin: 0">Resumen de los casos Tipo I, II y III reportados en el SIUCE.</p>
+    </div>
+    <div class="acciones">
+      <a class="btn btn-pri" href="caso-form.html">Registrar caso</a>
+      <a class="btn" href="importar.html">Importar CSV</a>
+    </div>
+  </div>
+  <div id="alerta-error" class="alerta a-bad" role="alert" hidden></div>
+
+  <section id="indicadores" class="grid g4" style="margin-bottom: 1rem" aria-label="Indicadores" hidden>
+    <div class="kpi"><b id="ind-total"></b><span>Casos registrados</span></div>
+    <div class="kpi"><b id="ind-ruta-activa"></b><span>Con ruta activa</span></div>
+    <div class="kpi"><b id="ind-tipo1"></b><span>Situaciones Tipo I</span></div>
+    <div class="kpi"><b id="ind-tipo3"></b><span>Situaciones Tipo III</span></div>
+    <div class="kpi"><b id="ind-ruta-completa"></b><span>Con la ruta completa (12 de 12)</span></div>
+  </section>
+
+  <section class="card">
+    <h2>Últimos casos editados</h2>
+    <div id="sin-casos" class="vacio" hidden>Todavía no hay casos. Registre el primero o importe un archivo CSV.</div>
+    <div class="tabla-wrap">
+      <table class="tabla" id="tabla-recientes" hidden>
+        <thead><tr><th>ID</th><th>Presunto agresor</th><th>Institución</th><th>Clasificación</th><th>Avance</th><th>Última edición</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<div id="avisos" class="avisos" aria-live="polite"></div>
+<dialog id="dlg-confirmar"></dialog>
+
+<script src="js/pagina-panel.js"></script>
+</body>
+</html>

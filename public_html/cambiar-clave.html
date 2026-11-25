@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cambiar clave · Casos SIUCE</title>
+<link rel="stylesheet" href="css/estilos.css">
+<script src="js/jquery.min.js"></script>
+<script src="js/sesion.js"></script>
+<script src="js/api.js"></script>
+<script src="js/validadores.js"></script>
+</head>
+<body>
+<main class="login-wrap">
+  <form class="card login-card" id="form-clave" novalidate>
+    <h1>Cambie su clave</h1>
+    <p class="mut">Por seguridad debe reemplazar la clave temporal antes de continuar.</p>
+    <div id="alerta-general" class="alerta a-bad" role="alert" hidden></div>
+    <div class="campo" id="campo-actual" style="margin-bottom: .8rem">
+      <label for="ca">Clave actual</label>
+      <input id="ca" type="password" autocomplete="current-password">
+      <div class="msg-error" id="error-actual" hidden></div>
+    </div>
+    <div class="campo" id="campo-nueva" style="margin-bottom: .8rem">
+      <label for="cn">Clave nueva</label>
+      <input id="cn" type="password" autocomplete="new-password">
+      <div class="msg-error" id="error-nueva" hidden></div>
+      <div class="ayuda" id="ayuda-nueva">Mínimo 10 caracteres, con mayúscula, minúscula y número.</div>
+    </div>
+    <div class="campo" id="campo-repetir" style="margin-bottom: 1rem">
+      <label for="cr">Repita la clave nueva</label>
+      <input id="cr" type="password" autocomplete="new-password">
+      <div class="msg-error" id="error-repetir" hidden></div>
+    </div>
+    <div class="acciones">
+      <button class="btn btn-pri" id="btn-guardar">Guardar clave</button>
+      <button type="button" class="btn" id="btn-salir">Salir</button>
+    </div>
+  </form>
+</main>
+
+<script src="js/pagina-cambiar-clave.js"></script>
+</body>
+</html>
