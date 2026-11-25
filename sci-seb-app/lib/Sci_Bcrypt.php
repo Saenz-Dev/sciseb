@@ -42,7 +42,8 @@ class Sci_Bcrypt
         return '$2a$' . sprintf('%02d', $costo) . '$' . self::codificar64($bytesAleatorios, 16);
     }
 
-    private static function bytesAleatorios($cantidad)
+    /** Público porque otras partes del sistema (p. ej. los tokens de import_preview) también necesitan bytes al azar. */
+    public static function bytesAleatorios($cantidad)
     {
         if (function_exists('random_bytes')) {
             return random_bytes($cantidad);

@@ -18,6 +18,19 @@ $router->get('/casos', function (Sci_Request $req, $params, $sesion) {
     Sci_Response::json(200, $r);
 }, 'AUTH');
 
+$router->get('/casos/exportar', function (Sci_Request $req, $params, $sesion) {
+    $filtro = array(
+        'q'               => $req->query('q'),
+        'provinciaId'     => $req->query('provinciaId'),
+        'clasificacionId' => $req->query('clasificacionId'),
+        'ruta'            => $req->query('ruta'),
+        'estado'          => $req->query('estado'),
+        'borrador'        => $req->query('borrador') === 'true',
+    );
+    $a = ExportacionService::exportar($sesion, $filtro, $req->query('formato', 'csv'));
+    Sci_Response::archivo($a['nombre'], $a['contenido'], $a['tipo']);
+}, 'AUTH');
+
 $router->get('/casos/{id}', function (Sci_Request $req, $params, $sesion) {
     Sci_Response::json(200, CasoService::obtener($params['id']));
 }, 'AUTH');
