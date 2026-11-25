@@ -5,7 +5,8 @@
  */
 class ExportacionService
 {
-    const ENCABEZADOS = array('ID del caso', 'Presunto agresor', 'Cédula', 'Presunta víctima',
+    // PHP no admite const con valor array hasta la 5.6 — propiedad estática en vez de const.
+    public static $ENCABEZADOS = array('ID del caso', 'Presunto agresor', 'Cédula', 'Presunta víctima',
         'Institución educativa', 'Sede', 'Área / asignatura', 'Municipio', 'Provincia',
         'Clasificación SIUCE', 'Ruta', 'N° de radicado', 'Resolución SEB', 'Resolución rectoral',
         'Ubicación', 'Fecha de ocurrencia', 'Lugar de ocurrencia', 'Disciplinario',
@@ -90,7 +91,7 @@ class ExportacionService
 
         AuditoriaService::registrar($sesion['id'], null, 'EXPORTAR', count($filas) . ' casos, csv');
 
-        $contenido = Sci_Csv::escribir(self::ENCABEZADOS, $filas);
+        $contenido = Sci_Csv::escribir(self::$ENCABEZADOS, $filas);
         $nombre = 'casos_siuce_' . date('Ymd') . '.csv';
         return array('contenido' => $contenido, 'nombre' => $nombre, 'tipo' => 'text/csv; charset=UTF-8');
     }

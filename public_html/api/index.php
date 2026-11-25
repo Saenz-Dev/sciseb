@@ -45,7 +45,9 @@ function sci_cors()
         header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS');
         header('Access-Control-Allow-Headers: Authorization, Content-Type');
         header('Access-Control-Max-Age: 3600');
-        http_response_code(204);
+        // http_response_code() no existe hasta PHP 5.4 — se manda la línea de estado a mano.
+        $protocolo = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.1';
+        header($protocolo . ' 204 No Content', true, 204);
         exit;
     }
 }

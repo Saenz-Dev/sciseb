@@ -7,17 +7,18 @@
  */
 class ImportacionService
 {
-    const COLUMNAS = array('id_caso', 'presunto_agresor', 'victima_iniciales', 'cedula', 'area_asignatura',
+    // PHP no admite const con valor array hasta la 5.6 — propiedades estáticas en vez de const.
+    public static $COLUMNAS = array('id_caso', 'presunto_agresor', 'victima_iniciales', 'cedula', 'area_asignatura',
         'institucion', 'sede', 'municipio', 'provincia', 'clasificacion', 'ruta', 'n_radicado', 'resolucion_seb',
         'resolucion_rectoral', 'ubicacion', 'fecha_ocurrencia', 'lugar_ocurrencia', 'disciplinario',
         'decision_comite', 'penal');
 
-    const OBLIGATORIAS = array('presunto_agresor', 'victima_iniciales', 'cedula',
+    public static $OBLIGATORIAS = array('presunto_agresor', 'victima_iniciales', 'cedula',
         'institucion', 'sede', 'municipio', 'provincia', 'clasificacion');
 
     public static function plantillaCsv()
     {
-        return "\xEF\xBB\xBF" . implode(';', self::COLUMNAS) . "\r\n";
+        return "\xEF\xBB\xBF" . implode(';', self::$COLUMNAS) . "\r\n";
     }
 
     // ------------------------------------------------------------------ vista previa
@@ -103,7 +104,7 @@ class ImportacionService
         $filasArchivo = $leido['filas'];
 
         $faltan = array();
-        foreach (self::OBLIGATORIAS as $c) {
+        foreach (self::$OBLIGATORIAS as $c) {
             if (!in_array($c, $encabezados, true)) $faltan[] = $c;
         }
         if (count($faltan) > 0) {

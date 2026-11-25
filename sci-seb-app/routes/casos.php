@@ -58,7 +58,9 @@ $router->post('/casos/{id}/reactivar', function (Sci_Request $req, $params, $ses
 }, 'ADMIN');
 
 $router->put('/casos/{id}/ruta', function (Sci_Request $req, $params, $sesion) {
-    Sci_Response::json(200, CasoService::cambiarRuta($sesion, $params['id'], !empty($req->campo('activa'))));
+    // empty() no acepta el resultado directo de una llamada a método antes de PHP 5.5 — se guarda primero.
+    $activa = $req->campo('activa');
+    Sci_Response::json(200, CasoService::cambiarRuta($sesion, $params['id'], !empty($activa)));
 }, 'AUTH');
 
 $router->put('/casos/{id}/pasos/{numero}', function (Sci_Request $req, $params, $sesion) {
