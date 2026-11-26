@@ -32,7 +32,14 @@ class Sci_Response
 
     public static function archivo($nombreArchivo, $contenido, $tipoMime = 'text/csv; charset=UTF-8')
     {
-        if (ob_get_level() > 0) {
+        // El .xlsx es binario (ZIP con bytes que no son UTF-8 válido). Algunos hostings viejos
+        // tienen activo mb_http_output()/mbstring.func_overload, que intenta "transcodificar" TODA
+        // la salida como si fuera texto — eso corrompe el binario (el CSV, al ser texto, sobrevive;
+        // el .xlsx no). "pass" apaga esa conversión para esta respuesta.
+        if (function_exists('mb_http_output')) {
+            mb_http_output('pass');
+        }
+        while (ob_get_level() > 0) {
             ob_end_clean();
         }
         self::estadoHttp(200);
