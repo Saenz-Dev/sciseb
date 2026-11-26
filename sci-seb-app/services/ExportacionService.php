@@ -30,7 +30,10 @@ class ExportacionService
         $stmtTotal = $pdo->prepare('SELECT COUNT(*) ' . Sci_CasoQuery::JOINS . ' ' . $where);
         $stmtTotal->execute($params);
         $total = (int) $stmtTotal->fetchColumn();
-        $max = (int) Sci_Config::get('exportacion')['max_filas'];
+        // PHP 5.3 no admite indexar directamente el resultado de una llamada ("foo()['x']" es de
+        // PHP 5.4+) — hay que guardarlo en una variable primero.
+        $cfgExportacion = Sci_Config::get('exportacion');
+        $max = (int) $cfgExportacion['max_filas'];
         if ($total > $max) {
             throw new Sci_Api_Exception(422, 'DEMASIADOS_CASOS',
                 "Hay $total casos con estos filtros y el máximo por archivo es $max. Aplique más filtros.");

@@ -114,7 +114,10 @@ class ImportacionService
         if (count($filasArchivo) === 0) {
             throw Sci_Api_Exception::solicitudInvalida('El archivo no tiene filas de datos.');
         }
-        $max = (int) Sci_Config::get('importacion')['max_filas'];
+        // PHP 5.3 no admite indexar directamente el resultado de una llamada ("foo()['x']" es de
+        // PHP 5.4+) — hay que guardarlo en una variable primero.
+        $cfgImportacion = Sci_Config::get('importacion');
+        $max = (int) $cfgImportacion['max_filas'];
         if (count($filasArchivo) > $max) {
             throw new Sci_Api_Exception(422, 'DEMASIADAS_FILAS',
                 'El archivo tiene ' . count($filasArchivo) . ' filas y el máximo es ' . $max . '. Divídalo en varios archivos.');

@@ -13,10 +13,15 @@ class UsuarioService
 
     public static function generarClaveTemporal()
     {
-        $todos = self::MAYUS . self::MINUS . self::DIGITOS;
-        $sb = self::MAYUS[self::indiceAleatorio(strlen(self::MAYUS))]
-            . self::MINUS[self::indiceAleatorio(strlen(self::MINUS))]
-            . self::DIGITOS[self::indiceAleatorio(strlen(self::DIGITOS))];
+        // PHP 5.3 no admite indexar una constante de clase directamente con "[]" (self::MAYUS[0]
+        // es un error de sintaxis ahí) — hay que guardarla en una variable primero.
+        $mayus = self::MAYUS;
+        $minus = self::MINUS;
+        $digitos = self::DIGITOS;
+        $todos = $mayus . $minus . $digitos;
+        $sb = $mayus[self::indiceAleatorio(strlen($mayus))]
+            . $minus[self::indiceAleatorio(strlen($minus))]
+            . $digitos[self::indiceAleatorio(strlen($digitos))];
         while (strlen($sb) < 12) {
             $sb .= $todos[self::indiceAleatorio(strlen($todos))];
         }
