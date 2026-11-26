@@ -31,6 +31,8 @@ require_once $raiz . '/lib/Sci_Auth.php';
 require_once $raiz . '/lib/Sci_Validator.php';
 require_once $raiz . '/lib/Sci_CasoQuery.php';
 require_once $raiz . '/lib/Sci_Csv.php';
+require_once $raiz . '/lib/Sci_Zip.php';
+require_once $raiz . '/lib/Sci_Xlsx.php';
 
 Sci_Config::cargar($raiz . '/config/config.php');
 

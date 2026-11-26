@@ -1,7 +1,7 @@
 <?php
 /**
- * Puerto de ExportacionService.java — solo CSV (se descartó .xlsx: sin Composer no hay forma
- * razonable de generar OOXML real sin escribir un lector/escritor de ZIP+XML a mano).
+ * Puerto de ExportacionService.java — CSV y XLSX real (este último generado a mano con Sci_Zip +
+ * Sci_Xlsx, sin ninguna librería, ver esos archivos).
  */
 class ExportacionService
 {
@@ -21,8 +21,9 @@ class ExportacionService
     /** @return array('contenido'=>string, 'nombre'=>string, 'tipo'=>string) */
     public static function exportar($sesion, $filtro, $formato)
     {
-        if (strcasecmp($formato, 'csv') !== 0) {
-            throw Sci_Api_Exception::solicitudInvalida('El formato debe ser csv.');
+        $xlsx = strcasecmp($formato, 'xlsx') === 0;
+        if (!$xlsx && strcasecmp($formato, 'csv') !== 0) {
+            throw Sci_Api_Exception::solicitudInvalida('El formato debe ser csv o xlsx.');
         }
         $pdo = Sci_Db::conexion();
         list($where, $params) = Sci_CasoQuery::build($filtro);
@@ -92,11 +93,21 @@ class ExportacionService
             );
         }
 
-        AuditoriaService::registrar($sesion['id'], null, 'EXPORTAR', count($filas) . ' casos, csv');
+        AuditoriaService::registrar($sesion['id'], null, 'EXPORTAR', count($filas) . ' casos, ' . ($xlsx ? 'xlsx' : 'csv'));
 
-        $contenido = Sci_Csv::escribir(self::$ENCABEZADOS, $filas);
-        $nombre = 'casos_siuce_' . date('Ymd') . '.csv';
-        return array('contenido' => $contenido, 'nombre' => $nombre, 'tipo' => 'text/csv; charset=UTF-8');
+        $base = 'casos_siuce_' . date('Ymd');
+        if ($xlsx) {
+            return array(
+                'contenido' => Sci_Xlsx::generar(self::$ENCABEZADOS, $filas),
+                'nombre'    => $base . '.xlsx',
+                'tipo'      => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            );
+        }
+        return array(
+            'contenido' => Sci_Csv::escribir(self::$ENCABEZADOS, $filas),
+            'nombre'    => $base . '.csv',
+            'tipo'      => 'text/csv; charset=UTF-8',
+        );
     }
 
     private static function formatoFecha($fechaHoraMysql)
