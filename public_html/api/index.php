@@ -14,9 +14,26 @@
 ob_start();
 
 // dirname(__FILE__, $niveles) con segundo parámetro solo existe desde PHP 7 — PHP 5.3.3 no lo
-// soporta, por eso se encadenan llamadas simples. public_html/api/index.php -> subir 2 niveles
-// hasta la carpeta que contiene tanto public_html/ como sci-seb-app/ (fuera del docroot).
-require dirname(dirname(dirname(__FILE__))) . '/sci-seb-app/bootstrap.php';
+// soporta, por eso se encadenan llamadas simples.
+//
+// La ubicación real de sci-seb-app/ cambia según el entorno (en desarrollo local es hermana de
+// public_html/; en el hosting real de producción vive en private/sci-seb-app/, porque public_html/
+// aquí se sube dentro de una subcarpeta de "web" — ver docs/MANUAL_INSTALACION_PHP.md). En vez de
+// fijar un número de niveles, se prueban las ubicaciones candidatas y se usa la primera que exista.
+$candidatosBootstrap = array(
+    dirname(dirname(dirname(__FILE__))) . '/sci-seb-app/bootstrap.php',
+    dirname(dirname(dirname(dirname(__FILE__)))) . '/private/sci-seb-app/bootstrap.php',
+);
+$rutaBootstrap = null;
+foreach ($candidatosBootstrap as $candidato) {
+    if (is_file($candidato)) { $rutaBootstrap = $candidato; break; }
+}
+if ($rutaBootstrap === null) {
+    header('Content-Type: application/json; charset=UTF-8');
+    echo json_encode(array('codigo' => 'ERROR_INTERNO', 'mensaje' => 'No se encontró sci-seb-app/bootstrap.php en ninguna ubicación esperada.', 'errores' => null));
+    exit;
+}
+require $rutaBootstrap;
 
 register_shutdown_function(function () {
     $error = error_get_last();

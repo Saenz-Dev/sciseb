@@ -16,7 +16,10 @@ function apiUrl(ruta, params) {
     if (v !== undefined && v !== null && v !== '') q.append(k, v);
   });
   const s = q.toString();
-  return '/api' + ruta + (s ? '?' + s : '');
+  // Sin "/" inicial a propósito: relativo a la carpeta de la página actual (todas las páginas
+  // viven juntas en el mismo nivel), así funciona igual si la app queda en la raíz del dominio
+  // o en una subcarpeta (p. ej. /siuce/) sin tener que tocar este archivo según el despliegue.
+  return 'api' + ruta + (s ? '?' + s : '');
 }
 
 /**
