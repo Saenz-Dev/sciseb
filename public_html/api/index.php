@@ -35,12 +35,23 @@ if ($rutaBootstrap === null) {
 }
 require $rutaBootstrap;
 
+// Diagnóstico temporal: este host no deja ver dónde cae error_log(), así que además se escribe un
+// archivo propio dentro de sci-seb-app/ (fuera del docroot, no accesible por web) para poder
+// revisarlo por FTP. BORRAR esta función y sus llamadas una vez resuelto el problema que se esté
+// depurando en este momento.
+define('SCI_DIAG_LOG', dirname($rutaBootstrap) . '/diag.log');
+function sci_diag($msg)
+{
+    @file_put_contents(SCI_DIAG_LOG, '[' . date('Y-m-d H:i:s') . '] ' . $msg . "\n", FILE_APPEND);
+}
+
 register_shutdown_function(function () {
     $error = error_get_last();
     if ($error === null) return;
     $fatales = array(E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR);
     if (!in_array($error['type'], $fatales, true)) return;
     error_log('SCI-SEB fatal: ' . $error['message'] . ' en ' . $error['file'] . ':' . $error['line']);
+    sci_diag('FATAL: ' . $error['message'] . ' en ' . $error['file'] . ':' . $error['line']);
     if (!headers_sent()) {
         Sci_Response::json(500, array('codigo' => 'ERROR_INTERNO', 'mensaje' => 'Error interno.', 'errores' => null));
     }
@@ -124,9 +135,11 @@ try {
         Sci_Response::json(409, array('codigo' => 'INTEGRIDAD', 'mensaje' => 'Hay datos relacionados que impiden la operación.', 'errores' => null));
     } else {
         error_log('SCI-SEB PDOException: ' . $e->getMessage());
+        sci_diag('PDOException: ' . $e->getMessage() . ' en ' . $e->getFile() . ':' . $e->getLine() . "\n" . $e->getTraceAsString());
         Sci_Response::json(500, array('codigo' => 'ERROR_INTERNO', 'mensaje' => 'Error interno.', 'errores' => null));
     }
 } catch (Exception $e) {
     error_log('SCI-SEB Exception: ' . $e->getMessage());
+    sci_diag('Exception: ' . $e->getMessage() . ' en ' . $e->getFile() . ':' . $e->getLine() . "\n" . $e->getTraceAsString());
     Sci_Response::json(500, array('codigo' => 'ERROR_INTERNO', 'mensaje' => 'Error interno.', 'errores' => null));
 }
