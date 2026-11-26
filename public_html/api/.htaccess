@@ -5,7 +5,9 @@ RewriteEngine On
 # mecanismo de respaldo (getallheaders / HTTP_AUTHORIZATION / REDIRECT_HTTP_AUTHORIZATION).
 RewriteCond %{HTTP:Authorization} ^(.*)
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%1]
-CGIPassAuth On
+# CGIPassAuth On — quitado: es una directiva de Apache 2.4.13+ (2015); en un Apache más viejo
+# (de la época de PHP 5.3.3) no la reconoce, y eso puede invalidar TODO este .htaccess, no solo
+# esta línea. Sci_Auth ya tiene su propio plan B para recuperar Authorization sin esto.
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^ index.php [L]
