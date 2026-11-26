@@ -18,6 +18,11 @@ class Sci_Db
                 PDO::ATTR_EMULATE_PREPARES   => true,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             ));
+            // El parámetro "charset" en el DSN de PDO_MYSQL recién se volvió confiable desde PHP
+            // 5.3.6 — en PHP 5.3.3 se ignora en silencio y la conexión queda con el charset por
+            // defecto del servidor/driver, rompiendo los acentos (ñ, á, é...). SET NAMES es el
+            // workaround clásico para esa versión: fuerza el charset ya con la conexión abierta.
+            self::$pdo->exec("SET NAMES utf8");
         }
         return self::$pdo;
     }
