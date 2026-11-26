@@ -73,9 +73,13 @@ sci_cors();
 
 try {
     $uri = $_SERVER['REQUEST_URI'];
-    // El front controller vive en public_html/api/index.php; REQUEST_URI llega como "/api/...".
-    if (strpos($uri, '/api') === 0) {
-        $uri = substr($uri, 4);
+    // No se asume que la API vive en "/api/..." desde la raíz del dominio — en despliegues reales
+    // puede estar en una subcarpeta (p. ej. "/siuce/api/..."). SCRIPT_NAME siempre refleja dónde
+    // está físicamente este index.php relativo al dominio, así que se usa eso para calcular el
+    // prefijo exacto a quitar, sea cual sea la profundidad.
+    $prefijoApi = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
+    if ($prefijoApi !== '/' && strpos($uri, $prefijoApi) === 0) {
+        $uri = substr($uri, strlen($prefijoApi));
     }
     if ($uri === '' || $uri[0] !== '/') {
         $uri = '/' . $uri;
