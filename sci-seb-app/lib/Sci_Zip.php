@@ -14,11 +14,27 @@ class Sci_Zip
         $this->archivos[$nombre] = $contenido;
     }
 
+    /**
+     * Fecha/hora DOS (16 bits cada una) de "ahora". Un valor fijo de 0x0000/0x0000 (equivalente a
+     * "sin fecha", antes de 1980-01-01) es aceptado por Python/.NET pero Excel lo trata como
+     * indicio de paquete corrupto y descarta el contenido sin avisar el motivo — confirmado
+     * comparando byte a byte contra un .xlsx idéntico salvo esos 4 bytes.
+     */
+    private static function fechaHoraDos()
+    {
+        $t = getdate();
+        $anio = $t['year'] < 1980 ? 1980 : $t['year'];
+        $fecha = (($anio - 1980) << 9) | ($t['mon'] << 5) | $t['mday'];
+        $hora = ($t['hours'] << 11) | ($t['minutes'] << 5) | intval($t['seconds'] / 2);
+        return array($hora, $fecha);
+    }
+
     public function construir()
     {
         $local = '';
         $central = '';
         $offset = 0;
+        list($horaDos, $fechaDos) = self::fechaHoraDos();
 
         foreach (array_keys($this->archivos) as $nombre) {
             $contenido = $this->archivos[$nombre];
@@ -30,8 +46,8 @@ class Sci_Zip
                 . pack('v', 20)       // versión necesaria
                 . pack('v', 0)        // flags
                 . pack('v', 0)        // método: 0 = sin comprimir
-                . pack('v', 0)        // hora
-                . pack('v', 0x21)     // fecha (1-1-1980, valor mínimo válido)
+                . pack('v', $horaDos)
+                . pack('v', $fechaDos)
                 . pack('V', $crc)
                 . pack('V', $tamano)  // tamaño comprimido = tamaño real (STORED)
                 . pack('V', $tamano)
@@ -44,7 +60,7 @@ class Sci_Zip
             $cabeceraCentral = "PK\x01\x02"
                 . pack('v', 20) . pack('v', 20)
                 . pack('v', 0) . pack('v', 0)
-                . pack('v', 0) . pack('v', 0x21)
+                . pack('v', $horaDos) . pack('v', $fechaDos)
                 . pack('V', $crc)
                 . pack('V', $tamano)
                 . pack('V', $tamano)

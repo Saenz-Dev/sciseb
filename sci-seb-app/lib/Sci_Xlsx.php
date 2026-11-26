@@ -52,12 +52,14 @@ class Sci_Xlsx
         }
 
         $cols = '<cols><col min="1" max="' . $numCols . '" width="18" customWidth="1"/></cols>';
+        // El esquema de CT_Worksheet exige el orden: sheetViews antes que cols — invertido, Excel
+        // descarta la hoja en silencio en vez de avisar el motivo (confirmado probando con Excel real).
         $sheet1 = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
             . '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
-            . $cols
             . '<sheetViews><sheetView workbookViewId="0">'
             . '<pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/>'
             . '</sheetView></sheetViews>'
+            . $cols
             . '<sheetData>' . $filasXml . '</sheetData>'
             . '</worksheet>';
 
